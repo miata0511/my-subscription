@@ -1,1 +1,73 @@
-dm1lc3M6Ly9leUpoWkdRaU9pSjBkeTB4TG1GakxqQjBhemhoTTJFeGNUUjBPVFJrYkdWeUxtTnZiU0lzSW1GcFpDSTZJakFpTENKb2IzTjBJam9pSWl3aWFXUWlPaUkyWmpsak1XWXdZeTB6TmpneExUUmpPREF0WVdOa09DMDJNV016WW1ZelpHUmxORE1pTENKdVpYUWlPaUowWTNBaUxDSndZWFJvSWpvaUlpd2ljRzl5ZENJNklqRTJNRGd4SWl3aWNITWlPaUl4TmpBNE1WOTBkekEyWVdNaUxDSnpZM2tpT2lKaGRYUnZJaXdpYzI1cElqb2lJaXdpZEd4eklqb2lJaXdpZEhsd1pTSTZJbTV2Ym1VaUxDSjJJam9pTWlKOQp2bWVzczovL1lYVjBienBrWkdJMFlXUXhZeTFtTm1VeUxUUXpOV1F0T0RVeU1DMHdNVEJtWXpaaE5EYzJZalZBTVRJeExqRTBMall4TGpJME9Ub3pNREk0TWc/cmVtYXJrcz1hdHQudXMmcGF0aD0vJm9iZnM9bm9uZSZhbHRlcklkPTAKdm1lc3M6Ly9ZWFYwYnpwa01UVTFNamc0TlMxa1pUQm1MVFJsWmpRdFlqQTJPQzB3WW1RNE9UUTBORGc1WTJWQU9Ib3hOVFV1TXpJdU1UUTBPak0zT0Rrdz9yZW1hcmtzPWFsaXl1bi5zZyZwYXRoPS8mb2Jmcz1ub25lJmFsdGVySWQ9MAp2bWVzczovL1lYVjBlam8wTURnMlpqYzNZUzFrWm1SbUxUUTROR1l0WVdRMU1DMWhaV05pWlRSak9UWXpZVEZBTWpBekxqRTFOaTR5TWpJdU1qVXhPakV4TnpjMz9yZW1hcmtzPSUzQ3BlbmdCJTNFZGV2aWNlLWluZmluaXRpJnBhdGg9LyZvYmZzPW5vbmUmYWx0ZXJJZD0w
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: 127.0.0.1:9090
+
+proxies:
+  - name: TW-Node
+    type: vmess
+    server: tw-1.ac.0tk8a3a1q4t94dler.com
+    port: 16081
+    uuid: 6f9c1f0c-3681-4c80-acd8-61c3bf3dde43
+    alterId: 0
+    cipher: auto
+    udp: true
+    
+  - name: ATT-US
+    type: vmess
+    server: 121.14.61.249
+    port: 30282
+    uuid: ddb4ad1c-f6e2-435d-8520-010fc6a476b5
+    alterId: 0
+    cipher: auto
+    udp: true
+    
+  - name: Aliyun-SG
+    type: vmess
+    server: 8z155.32.144
+    port: 37890
+    uuid: d1552885-de0f-4ef4-b068-0bd8944489ce
+    alterId: 0
+    cipher: auto
+    udp: true
+    
+  - name: Device-Infiniti
+    type: vmess
+    server: 203.156.222.251
+    port: 11777
+    uuid: 4086f77a-dfdf-484f-ad50-aecbe4c963a1
+    alterId: 0
+    cipher: auto
+    udp: true
+
+proxy-groups:
+  - name: "Auto Select"
+    type: url-test
+    proxies:
+      - TW-Node
+      - ATT-US
+      - Aliyun-SG
+      - Device-Infiniti
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+
+  - name: "PROXY"
+    type: select
+    proxies:
+      - Auto Select
+      - TW-Node
+      - ATT-US
+      - Aliyun-SG
+      - Device-Infiniti
+
+rules:
+  - DOMAIN-SUFFIX,google.com,PROXY
+  - DOMAIN-SUFFIX,facebook.com,PROXY
+  - DOMAIN-SUFFIX,youtube.com,PROXY
+  - DOMAIN-SUFFIX,twitter.com,PROXY
+  - DOMAIN-KEYWORD,google,PROXY
+  - DOMAIN-SUFFIX,ad.com,REJECT
+  - GEOIP,CN,DIRECT
+  - MATCH,PROXY
